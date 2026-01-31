@@ -1,0 +1,12 @@
+# mac
+.DS_Store
+
+# frontend
+HiSplit/frontend/node_modules
+HiSplit/frontend/dist
+
+# backend
+HiSplit/backend/node_modules
+
+# env files
+.env
