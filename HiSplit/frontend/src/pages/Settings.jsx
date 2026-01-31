@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Slidebar from "../components/slideBar";
 import visaImg from "../../assets/images/payments/visa.png";
 import mastercardImg from "../../assets/images/payments/mastercard.png";
-import paypalImg from "../../assets/images/payments/payPal.png";
+import paypalImg from "../../assets/images/payments/paypal.png";
 import {
   Page,
   Container,
