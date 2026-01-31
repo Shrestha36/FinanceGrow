@@ -95,7 +95,7 @@ function Settings() {
   // Load orders
   // ----------------------------
   useEffect(() => {
-    fetch("http://localhost:5001/api/orders")
+    fetch(`${import.meta.env.VITE_API_URL}/api/orders`)
       .then((r) => r.json())
       .then((data) => setOrdersList(data || []))
       .catch(console.error);

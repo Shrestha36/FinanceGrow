@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5001/api/expenses";
+const BASE_URL = import.meta.env.VITE_API_URL + "/api";
 
 export const getExpenses = async () => {
   const res = await fetch(BASE_URL);
@@ -27,7 +27,7 @@ export const deleteExpense = async (id) => {
 
 export const getExpenseAnalytics = async (mode) => {
   const res = await fetch(
-    `http://localhost:5001/api/expenses/analytics?mode=${mode}`
+    `${import.meta.env.VITE_API_URL}/api/expenses/analytics?mode=${mode}`
   );
   return res.json();
 };

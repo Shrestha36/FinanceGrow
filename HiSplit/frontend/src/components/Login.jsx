@@ -21,7 +21,7 @@ function Login() {
   const [password, setPassword] = useState("");
 
   // 👉 profile step
-  const [step, setStep] = useState("login"); 
+  const [step, setStep] = useState("login");
   const [user, setUser] = useState(null);
 
   const [username, setUsername] = useState("");
@@ -43,7 +43,7 @@ function Login() {
 
     if (!passwordRegex.test(password)) {
       setError(
-        "Password must be at least 8 characters, include one capital letter and one special character"
+        "Password must be at least 8 characters, include one capital letter and one special character",
       );
       return;
     }
@@ -52,7 +52,7 @@ function Login() {
       setLoading(true);
       setError("");
 
-      const res = await fetch("http://localhost:5001/api/login", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -83,43 +83,41 @@ function Login() {
   // ---------------------------------------
   // PROFILE SUBMIT (frontend only for now)
   // ---------------------------------------
-const handleProfileSave = async () => {
-  if (!username || !address) {
-    setError("Please fill all profile fields");
-    return;
-  }
-
-  try {
-    setLoading(true);
-    setError("");
-
-    const res = await fetch("http://localhost:5001/api/profile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId: user.email,
-        username,
-        address,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "Profile save failed");
+  const handleProfileSave = async () => {
+    if (!username || !address) {
+      setError("Please fill all profile fields");
+      return;
     }
 
-    // optional local cache
-    localStorage.setItem("profile", JSON.stringify(data.profile));
+    try {
+      setLoading(true);
+      setError("");
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/profile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.email,
+          username,
+          address,
+        }),
+      });
 
-    navigate("/home");
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+      const data = await res.json();
 
+      if (!res.ok) {
+        throw new Error(data.message || "Profile save failed");
+      }
+
+      // optional local cache
+      localStorage.setItem("profile", JSON.stringify(data.profile));
+
+      navigate("/home");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <PageWrapper>
@@ -130,13 +128,12 @@ const handleProfileSave = async () => {
           </Brand>
 
           <WelcomeText>
-            Take control of your finances, track your spending,
-            and grow your savings with smart insights.
+            Take control of your finances, track your spending, and grow your
+            savings with smart insights.
           </WelcomeText>
         </LeftSection>
 
         <RightSection>
-
           {step === "login" && (
             <>
               <Title>Login</Title>
@@ -188,12 +185,9 @@ const handleProfileSave = async () => {
 
               {error && <ErrorText>{error}</ErrorText>}
 
-              <Button onClick={handleProfileSave}>
-                Continue
-              </Button>
+              <Button onClick={handleProfileSave}>Continue</Button>
             </>
           )}
-
         </RightSection>
       </LoginCard>
     </PageWrapper>

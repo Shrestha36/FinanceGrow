@@ -1,4 +1,5 @@
 // controllers/ai.controller.js
+const OLLAMA_URL = process.env.OLLAMA_URL;
 
 export const getExpenseAdvice = async (req, res) => {
   try {
@@ -17,7 +18,7 @@ Give exactly 5 short and practical tips to improve savings.
 Each tip on a new line.
 `;
 
-    const response = await fetch("http://localhost:11434/api/generate", {
+    const response = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

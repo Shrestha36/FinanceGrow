@@ -51,7 +51,7 @@ function Home() {
      LOAD MONTHLY SUMMARY
      ======================= */
   useEffect(() => {
-    fetch(`http://localhost:5001/api/monthly-summary?userEmail=${userEmail}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/monthly-summary?userEmail=${userEmail}`)
       .then((res) => res.json())
       .then(setMonthlySummary)
       .catch(console.error);
@@ -64,7 +64,7 @@ function Home() {
   const fetchExpense = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5001/api/expense-analysis?userEmail=${userEmail}`,
+        `${import.meta.env.VITE_API_URL}/api/expense-analysis?userEmail=${userEmail}`,
       );
 
       if (!response.ok) {
@@ -98,7 +98,7 @@ function Home() {
     try {
       setIsUploading(true); // 🔵 START LOADER
 
-      const response = await fetch("http://localhost:5001/api/bill-scan", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/bill-scan`, {
         method: "POST",
         body: formData,
       });

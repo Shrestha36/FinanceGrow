@@ -82,7 +82,7 @@ function Expenses() {
   };
 
   const saveMonthlySpent = async () => {
-    await fetch("http://localhost:5001/api/monthly-summary", {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/monthly-summary`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -100,7 +100,7 @@ function Expenses() {
       setAiError("");
       setAiAdvice("");
 
-      const res = await fetch("http://localhost:5001/api/ai/expense-advice", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ai/expense-advice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
