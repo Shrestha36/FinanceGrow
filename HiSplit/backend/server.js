@@ -19,6 +19,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());   // 👈 REQUIRED
 
+app.get("/", (req, res) => {
+  res.send("FinanceGrow API is running");
+});
+
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/login", authRoutes); 
