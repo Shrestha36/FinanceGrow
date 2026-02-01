@@ -57,7 +57,6 @@ function Login() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      
 
       const text = await res.text();
       const data = text ? JSON.parse(text) : {};
@@ -86,9 +85,10 @@ function Login() {
   // ---------------------------------------
   const handleProfileSave = async () => {
     if (!user) {
-    setError("User not found. Please login again.");
-    return;
-  }
+      setError("User not found. Please login again.");
+      return;
+    }
+
     if (!username || !address) {
       setError("Please fill all profile fields");
       return;
@@ -97,6 +97,7 @@ function Login() {
     try {
       setLoading(true);
       setError("");
+
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/profile`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -113,11 +114,16 @@ function Login() {
         throw new Error(data.message || "Profile save failed");
       }
 
-      // optional local cache
       localStorage.setItem("profile", JSON.stringify(data.profile));
 
       navigate("/home");
     } catch (err) {
+      if (err.message === "Profile already exists") {
+        navigate("/home");
+        return;
+      }
+
+      // keep this
       setError(err.message);
     } finally {
       setLoading(false);
