@@ -85,6 +85,10 @@ function Login() {
   // PROFILE SUBMIT (frontend only for now)
   // ---------------------------------------
   const handleProfileSave = async () => {
+    if (!user) {
+    setError("User not found. Please login again.");
+    return;
+  }
     if (!username || !address) {
       setError("Please fill all profile fields");
       return;
@@ -97,7 +101,7 @@ function Login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: user.email,
+          userId: user?.email,
           username,
           address,
         }),
