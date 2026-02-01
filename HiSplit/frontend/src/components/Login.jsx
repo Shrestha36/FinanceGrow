@@ -110,20 +110,19 @@ function Login() {
 
       const data = await res.json();
 
+      // ✅ handle "already exists" INSIDE the handler
       if (!res.ok) {
+        if (data.message === "Profile already exists") {
+          navigate("/home");
+          return;
+        }
+
         throw new Error(data.message || "Profile save failed");
       }
 
       localStorage.setItem("profile", JSON.stringify(data.profile));
-
       navigate("/home");
     } catch (err) {
-      if (err.message === "Profile already exists") {
-        navigate("/home");
-        return;
-      }
-
-      // keep this
       setError(err.message);
     } finally {
       setLoading(false);
