@@ -13,11 +13,13 @@ export const createProfile = async (req, res) => {
       });
     }
 
-    const alreadyExists = profiles.find(p => p.userId === userId);
+    const alreadyExists = profiles.find((p) => p.userId === userId);
 
     if (alreadyExists) {
-      return res.status(400).json({
-        message: "Profile already exists",
+      return res.status(200).json({
+        success: true,
+        profile: alreadyExists,
+        alreadyExists: true,
       });
     }
 
@@ -40,12 +42,11 @@ export const createProfile = async (req, res) => {
   }
 };
 
-
 export const getProfile = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const profile = profiles.find(p => p.userId === userId);
+    const profile = profiles.find((p) => p.userId === userId);
 
     if (!profile) {
       return res.status(404).json({
