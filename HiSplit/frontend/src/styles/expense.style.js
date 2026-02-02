@@ -8,7 +8,6 @@ export const ExpenseContainer = styled.div`
   display: flex;
   overflow: hidden;
   color: white;
-  height: 100vh;
 `;
 
 export const ContentWrapper = styled.div`
