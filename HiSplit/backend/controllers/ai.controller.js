@@ -1,7 +1,3 @@
-// controllers/ai.controller.js
-
-import fetch from "node-fetch";
-
 export const getExpenseAdvice = async (req, res) => {
   try {
     const { salary, daily, monthly, totalSpent, savings, currency } = req.body;
@@ -20,12 +16,13 @@ Each tip on a new line.
 `;
 
     const url =
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=` +
-      process.env.GEMINI_API_KEY;
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
     const response = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         contents: [
           {
@@ -37,14 +34,20 @@ Each tip on a new line.
 
     const data = await response.json();
 
+    console.log("Gemini raw response:", JSON.stringify(data, null, 2));
+
     const text =
-      data.candidates?.[0]?.content?.parts?.[0]?.text;
+      data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!text) {
-      return res.status(500).json({ message: "AI failed" });
+      return res.status(500).json({
+        message: "Gemini returned empty response",
+        raw: data,
+      });
     }
 
     res.json({ advice: text });
+
   } catch (err) {
     console.error("GEMINI ERROR:", err);
     res.status(500).json({ message: "AI failed" });
