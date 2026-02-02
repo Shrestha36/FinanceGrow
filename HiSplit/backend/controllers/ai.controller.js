@@ -14,9 +14,7 @@ Savings: ${currency}${savings}
 Give exactly 5 short and practical tips to improve savings.
 Each tip on a new line.
 `;
-
-  const url =
-  `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
     const response = await fetch(url, {
       method: "POST",
@@ -36,8 +34,7 @@ Each tip on a new line.
 
     console.log("Gemini raw response:", JSON.stringify(data, null, 2));
 
-    const text =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!text) {
       return res.status(500).json({
@@ -47,7 +44,6 @@ Each tip on a new line.
     }
 
     res.json({ advice: text });
-
   } catch (err) {
     console.error("GEMINI ERROR:", err);
     res.status(500).json({ message: "AI failed" });
