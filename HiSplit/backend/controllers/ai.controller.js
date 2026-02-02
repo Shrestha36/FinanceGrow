@@ -1,5 +1,5 @@
 // controllers/ai.controller.js
-const OLLAMA_URL = process.env.OLLAMA_URL;
+const OLLAMA_URL = process.env.OLLAMA_BASE_URL;
 
 export const getExpenseAdvice = async (req, res) => {
   try {

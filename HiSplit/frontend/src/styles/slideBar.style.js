@@ -8,7 +8,7 @@ export const Layout = styled.div`
 
 /* Sidebar */
 export const SidebarWrapper = styled.aside`
-  height: 100vh;
+  height: 100%;
 
   /* 🖥 desktop → participate in layout */
   position: sticky;
