@@ -1,5 +1,4 @@
-// controllers/ai.controller.js
-const OLLAMA_URL = process.env.OLLAMA_BASE_URL;
+import openai from "../config/openai.js";  
 
 export const getExpenseAdvice = async (req, res) => {
   try {
@@ -18,25 +17,20 @@ Give exactly 5 short and practical tips to improve savings.
 Each tip on a new line.
 `;
 
-    const response = await fetch(`${OLLAMA_URL}/api/generate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "llama3.2",  
-        prompt,
-        stream: false,
-      }),
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.6,
     });
-
-    const data = await response.json();
 
     res.json({
-      advice: data.response,
+      advice: completion.choices[0].message.content,
     });
+
   } catch (err) {
-    console.error("OLLAMA AI ERROR:", err);
+    console.error("OPENAI ERROR:", err);
     res.status(500).json({ message: "AI failed" });
   }
 };
