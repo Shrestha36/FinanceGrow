@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
@@ -25,7 +28,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/goals", goalRoutes);
-app.use("/api/login", authRoutes); 
+app.use("/api/auth", authRoutes);
 app.use("/api/monthly-summary", monthlySummary);
 app.use("/api/expense-analysis", ExpenseAnalysis);
 app.use("/api/bill-scan", billScanRoutes);

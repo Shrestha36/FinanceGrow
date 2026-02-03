@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import Loader from "../components/Loader";
 import Slidebar from "../components/slideBar";
+import AiProUpgrade from "../components/AiProUpgrade";
+import AIInsightBar from "../components/AIInsightBar";
 import { CURRENCYOPTIONS } from "../constants";
 import {
   ExpenseContainer,
@@ -24,8 +26,6 @@ import {
   GrowthArrow,
   Plate3D,
   BottomContainer,
-  AISuggestionsBox,
-  AISuggestionItem,
   AIErrorText,
 } from "../styles/expense.style";
 
@@ -39,6 +39,7 @@ function Expenses() {
   const [aiAdvice, setAiAdvice] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState("");
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
   const navigate = useNavigate();
 
@@ -100,28 +101,40 @@ function Expenses() {
       setAiError("");
       setAiAdvice("");
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ai/expense-advice`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          salary,
-          daily,
-          monthly,
-          totalSpent,
-          savings,
-          currency,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/ai/expense-advice`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            salary,
+            daily,
+            monthly,
+            totalSpent,
+            savings,
+            currency,
+            userEmail: "test@financegrow.com",
+          }),
+        },
+      );
 
       const data = await res.json();
 
       if (!res.ok) {
+        if (res.status === 402) {
+          throw new Error("PAYMENT_REQUIRED");
+        }
         throw new Error(data.message || "Failed to get AI advice");
       }
 
       setAiAdvice(data.advice);
     } catch (err) {
-      setAiError(err.message);
+      if (err.message === "PAYMENT_REQUIRED") {
+        setAiError("FREE_LIMIT_OVER");
+        setShowUpgrade(true);
+      } else {
+        setAiError(err.message);
+      }
     } finally {
       setAiLoading(false);
     }
@@ -144,6 +157,24 @@ function Expenses() {
       window.speechSynthesis.cancel();
     };
   }, [showFeedback]);
+
+  const handleUnlockAi = async () => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/ai/unlock`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userEmail: "test@financegrow.com",
+        }),
+      });
+
+      setAiError("");
+      setShowUpgrade(false);
+      alert("AI unlocked. You can use AI suggestions now!");
+    } catch (e) {
+      alert("Unlock failed");
+    }
+  };
 
   return (
     <ExpenseContainer>
@@ -305,7 +336,6 @@ function Expenses() {
 
         <InsightContainer disabled={aiLoading || !!aiAdvice}>
           <AIButton onClick={getAIAdvice} disabled={!canAnalyze || aiLoading}>
-            {/* visible label */}
             <span className="label">
               {aiLoading ? "Analyzing..." : "Boost My Savings with AI"}
             </span>
@@ -313,23 +343,19 @@ function Expenses() {
 
           {aiLoading && <Loader text="Boost My Savings with AI..." />}
 
-          {aiAdvice && (
-            <AISuggestionsBox>
-              <Title style={{ marginBottom: 12 }}>AI Suggestions</Title>
+          {aiAdvice && <AIInsightBar text={aiAdvice} />}
 
-              {aiAdvice
-                .replace(/^Here.*?\n/i, "")
-                .split("\n")
-                .filter((l) => l.trim())
-                .map((line, i) => (
-                  <AISuggestionItem key={i}>{line}</AISuggestionItem>
-                ))}
-            </AISuggestionsBox>
+          {aiError && aiError !== "FREE_LIMIT_OVER" && (
+            <AIErrorText>{aiError}</AIErrorText>
           )}
-
-          {aiError && <AIErrorText>{aiError}</AIErrorText>}
         </InsightContainer>
       </ContentWrapper>
+      {showUpgrade && (
+        <AiProUpgrade
+          onClose={() => setShowUpgrade(false)}
+          onPay={handleUnlockAi}
+        />
+      )}
     </ExpenseContainer>
   );
 }

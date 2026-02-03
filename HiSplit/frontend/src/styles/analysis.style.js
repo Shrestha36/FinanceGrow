@@ -14,7 +14,6 @@ export const AnalysisContainer = styled.div`
   background-position: center;
 
   @media (min-width: 768px) {
-    
   }
 `;
 
@@ -286,12 +285,11 @@ export const GlassCard = styled.div`
     `}
 `;
 
-
-
 export const AIWrapper = styled.div`
   margin-top: 32px;
   display: flex;
   justify-content: center;
+  gap: 12px;
   @media (min-width: 768px) {
     padding: 0 12px;
   }
@@ -323,8 +321,8 @@ export const ExpenseContainer = styled.div`
   max-width: 600px;
   padding: 80px 24px 120px;
   display: flex;
-    flex-direction: column;
-    justify-content: center;
+  flex-direction: column;
+  justify-content: center;
 
   /* Desktop only */
   @media (min-width: 1024px) {

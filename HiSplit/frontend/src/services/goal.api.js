@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL + "/api";
+const BASE_URL = import.meta.env.VITE_API_URL + "/api/goals";
 
 export const getGoal = async () => {
   const res = await fetch(BASE_URL);

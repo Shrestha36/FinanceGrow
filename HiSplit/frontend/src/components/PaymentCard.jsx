@@ -13,7 +13,7 @@ import {
   UpperConatiner,
 } from "../styles/paymentShare.style";
 
-function PaymentCard({ order }) {
+function PaymentCard({ order, onSuccess }) {
   const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
 
   const upiId = "yourupi@bank";
@@ -32,7 +32,6 @@ UPI ID: ${upiId}`;
       <UpperConatiner>
         <PaymentHeader>💳 Pay & Share</PaymentHeader>
 
-        {/* ✅ NAME + PRICE ONLY UPDATE AFTER SUBMIT */}
         <TotalAmount>
           ₹{amount}
           <span style={{ fontSize: 14, opacity: 0.7 }}>
@@ -40,7 +39,6 @@ UPI ID: ${upiId}`;
           </span>
         </TotalAmount>
 
-        {/* ✅ QR ALWAYS VISIBLE */}
         <QRSection>
           <QRCodeCanvas
             value={upiLink}
@@ -54,8 +52,11 @@ UPI ID: ${upiId}`;
         </QRSection>
       </UpperConatiner>
 
+      {/* ================= Bottom section ================= */}
+
       <BottomContainer>
-        {/* ✅ PAYMENT BUTTONS ALWAYS VISIBLE */}
+        {/* existing payment buttons */}
+
         {isMobile ? (
           <UPIButtons>
             <UPIButton onClick={() => (window.location.href = upiLink)}>
@@ -83,7 +84,8 @@ UPI ID: ${upiId}`;
           </UPIButtons>
         )}
 
-        {/* ✅ SHARE ALWAYS WORKS */}
+        {/* share section (already in your code) */}
+
         <ShareSection>
           <ShareButton
             onClick={() =>
@@ -109,6 +111,15 @@ UPI ID: ${upiId}`;
             Email
           </ShareButton>
         </ShareSection>
+
+        <UPIButtons style={{ marginTop: 12 }}>
+          <UPIButton
+            style={{ background: "#22d3ee", color: "#020617" }}
+            onClick={() => onSuccess && onSuccess()}
+          >
+            I have completed the payment
+          </UPIButton>
+        </UPIButtons>
       </BottomContainer>
     </PaymentCardContainer>
   );

@@ -13,8 +13,6 @@ const ExpenseAnalysis = lazy(() => import("./pages/ExpenseAnalysis"));
 const OrderBreakdown = lazy(() => import("./pages/OrderBreakDown"));
 const Settings = lazy(() => import("./pages/Settings"));
 
-/* optional – heavy helper screen */
-const AIExpenseHelper = lazy(() => import("./components/AIExpenseHelper"));
 
 function App() {
   return (
@@ -36,8 +34,6 @@ function App() {
         <Route path="/home/expense/analysis" element={<ExpenseAnalysis />} />
         <Route path="/home/order-breakdown" element={<OrderBreakdown />} />
         <Route path="/home/settings" element={<Settings />} />
-
-        <Route path="/AIExpenseHelper" element={<AIExpenseHelper />} />
       </Routes>
     </Suspense>
   );

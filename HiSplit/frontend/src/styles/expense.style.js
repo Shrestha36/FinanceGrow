@@ -8,6 +8,7 @@ export const ExpenseContainer = styled.div`
   display: flex;
   overflow: hidden;
   color: white;
+  min-height: 100vh;
 `;
 
 export const ContentWrapper = styled.div`
@@ -339,36 +340,6 @@ export const BottomContainer = styled.div`
   display: flex;
   position: relative;
   flex-direction: column;
-`;
-
-export const AISuggestionsBox = styled.div`
-  margin-top: 20px;
-  padding: 20px 22px;
-
-  border-radius: 18px;
-
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(14px);
-
-  border: 1px solid rgba(167, 139, 250, 0.45);
-  box-shadow:
-    0 0 30px rgba(139, 92, 246, 0.25),
-    inset 0 0 30px rgba(139, 92, 246, 0.08);
-`;
-
-export const AISuggestionItem = styled.div`
-  font-size: 14px;
-  line-height: 1.7;
-  color: #e5e7eb;
-  margin-bottom: 10px;
-  display: flex;
-  gap: 8px;
-
-  &::before {
-    content: "•";
-    color: #a78bfa;
-    font-weight: 700;
-  }
 `;
 
 export const AIErrorText = styled.div`

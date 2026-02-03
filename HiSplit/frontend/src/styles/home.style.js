@@ -22,7 +22,10 @@ export const DashboardGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 32px;
-  margin: 84px;
+  margin: 50px 12px;
+    @media (min-width: 1024px) {
+     margin: 84px;
+  }
 `;
 
 export const GlassCard = styled.div`

@@ -17,13 +17,15 @@ import {
 function Login() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  // login | signup | profile
+  const [step, setStep] = useState("login");
+
+  const [identifier, setIdentifier] = useState(""); // email or phone
   const [password, setPassword] = useState("");
 
-  // 👉 profile step
-  const [step, setStep] = useState("login");
   const [user, setUser] = useState(null);
 
+  // profile
   const [username, setUsername] = useState("");
   const [address, setAddress] = useState("");
 
@@ -33,10 +35,56 @@ function Login() {
   const passwordRegex =
     /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\[\]:;"'<>,.?/~`\\|-]).{8,}$/;
 
-  const handleSubmit = async (e) => {
+  // ----------------------
+  // LOGIN
+  // ----------------------
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
+    if (!identifier || !password) {
+      setError("All fields are required");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          identifier,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+
+      if (data.hasProfile) {
+        navigate("/home");
+      } else {
+        setStep("profile");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ----------------------
+  // SIGNUP
+  // ----------------------
+  const handleSignup = async () => {
+    if (!identifier || !password) {
       setError("All fields are required");
       return;
     }
@@ -52,26 +100,25 @@ function Login() {
       setLoading(true);
       setError("");
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            identifier,
+            password,
+          }),
+        },
+      );
 
-      const text = await res.text();
-      const data = text ? JSON.parse(text) : {};
+      const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Login failed");
+        throw new Error(data.message || "Signup failed");
       }
 
-      // ✅ store token
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      // ✅ keep user in state
       setUser(data.user);
-
-      // 👉 move to profile step instead of navigating
       setStep("profile");
     } catch (err) {
       setError(err.message);
@@ -80,9 +127,9 @@ function Login() {
     }
   };
 
-  // ---------------------------------------
-  // PROFILE SUBMIT (frontend only for now)
-  // ---------------------------------------
+  // ----------------------
+  // PROFILE
+  // ----------------------
   const handleProfileSave = async () => {
     if (!user) {
       setError("User not found. Please login again.");
@@ -102,7 +149,7 @@ function Login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: user?.email,
+          userId: user._id || user.email,
           username,
           address,
         }),
@@ -110,7 +157,6 @@ function Login() {
 
       const data = await res.json();
 
-      // ✅ handle "already exists" INSIDE the handler
       if (!res.ok) {
         if (data.message === "Profile already exists") {
           navigate("/home");
@@ -144,17 +190,17 @@ function Login() {
         </LeftSection>
 
         <RightSection>
+          {/* ---------------- LOGIN ---------------- */}
           {step === "login" && (
             <>
               <Title>Login</Title>
               <Subtitle>Enter your credentials to continue</Subtitle>
 
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleLogin}>
                 <Input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email or phone number"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                   disabled={loading}
                 />
 
@@ -172,30 +218,87 @@ function Login() {
                   {loading ? "Logging in..." : "Login"}
                 </Button>
               </form>
+
+              <Button
+                type="button"
+                style={{ marginTop: 10, background: "transparent", color: "#22d3ee" }}
+                onClick={() => {
+                  setError("");
+                  setPassword("");
+                  setStep("signup");
+                }}
+              >
+                New user? Create account
+              </Button>
             </>
           )}
 
+          {/* ---------------- SIGNUP ---------------- */}
+          {step === "signup" && (
+            <>
+              <Title>Create account</Title>
+              <Subtitle>Sign up to get started</Subtitle>
+
+              <Input
+                placeholder="Email or phone number"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                disabled={loading}
+              />
+
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+              />
+
+              {error && <ErrorText>{error}</ErrorText>}
+
+              <Button onClick={handleSignup} disabled={loading}>
+                {loading ? "Creating..." : "Create account"}
+              </Button>
+
+              <Button
+                type="button"
+                style={{ marginTop: 10, background: "transparent", color: "#22d3ee" }}
+                onClick={() => {
+                  setError("");
+                  setPassword("");
+                  setStep("login");
+                }}
+              >
+                Already have an account? Login
+              </Button>
+            </>
+          )}
+
+          {/* ---------------- PROFILE ---------------- */}
           {step === "profile" && (
             <>
               <Title>Create profile</Title>
               <Subtitle>Complete your profile</Subtitle>
 
-              {/* avatar optional later */}
               <Input
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                disabled={loading}
               />
 
               <Input
                 placeholder="Address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                disabled={loading}
               />
 
               {error && <ErrorText>{error}</ErrorText>}
 
-              <Button onClick={handleProfileSave}>Continue</Button>
+              <Button onClick={handleProfileSave} disabled={loading}>
+                {loading ? "Saving..." : "Continue"}
+              </Button>
             </>
           )}
         </RightSection>

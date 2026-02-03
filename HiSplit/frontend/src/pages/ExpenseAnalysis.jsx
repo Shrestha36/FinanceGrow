@@ -3,16 +3,21 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import piechartImage from "../../assets/images/piechart.png";
 import ExpenseTrendCard from "../components/ExpenseTrendCard";
 import Slidebar from "../components/slideBar";
+import AiProUpgrade from "../components/AiProUpgrade";
+import AIInsightBar from "../components/AIInsightBar";
+
 import {
   saveExpenseAnalysis as saveExpenseAPI,
   getExpenseAnalysis,
 } from "../services/expenseAnalysis.api";
+
 import {
   CATEGORIES,
   CURRENCYOPTIONS,
   PIECHARTCOLORS,
   UNNECESSARY_CATEGORIES,
 } from "../constants";
+
 import {
   AnalysisContainer,
   AnalysisWrapper,
@@ -35,7 +40,6 @@ import {
 } from "../styles/analysis.style";
 
 function ExpenseAnalysis() {
-  // 🔹 State
   const [currency, setCurrency] = useState("INR");
   const [income, setIncome] = useState(0);
   const [expenses, setExpenses] = useState([{ category: "Food", amount: "" }]);
@@ -46,11 +50,13 @@ function ExpenseAnalysis() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
 
-  // 🔴 Replace with auth later
+  // ✅ NEW
+  const [showUpgrade, setShowUpgrade] = useState(false);
+
+  // 🔴 replace with auth later
   const userEmail = "test@gmail.com";
   const hasIncome = income > 0;
 
-  // 🔹 Load saved expense analysis
   useEffect(() => {
     const load = async () => {
       try {
@@ -87,7 +93,6 @@ function ExpenseAnalysis() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // 🔹 Format currency
   const formatCurrency = (value) => {
     const currencyData = CURRENCYOPTIONS[currency];
     if (!currencyData) return value;
@@ -97,7 +102,6 @@ function ExpenseAnalysis() {
     )}`;
   };
 
-  // 🔹 Handlers
   const addRow = () => setExpenses([...expenses, { category: "", amount: "" }]);
 
   const removeRow = (index) =>
@@ -109,7 +113,6 @@ function ExpenseAnalysis() {
     setExpenses(updated);
   };
 
-  // 🔹 Calculations
   const categoryTotals = expenses.reduce((acc, item) => {
     const value = Number(item.amount || 0);
     if (!value) return acc;
@@ -147,6 +150,7 @@ function ExpenseAnalysis() {
 
   const unnecessaryPercent =
     income > 0 ? Math.round((unnecessaryExpense / income) * 100) : 0;
+
   const riskBarWidth = Math.min(unnecessaryPercent, 100);
 
   const riskColor =
@@ -156,7 +160,6 @@ function ExpenseAnalysis() {
         ? "#facc15"
         : "#22c55e";
 
-  // 🔹 Save
   const saveAnalysis = async () => {
     if (!hasIncome) {
       alert("Please enter your income before submitting.");
@@ -193,19 +196,32 @@ function ExpenseAnalysis() {
     }
   };
 
-  // 🔹 AI Insights
+  // ================= AI insights with paywall =================
+
   const getAIInsights = async () => {
     try {
       setLoadingAI(true);
       setAiError("");
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ai-insights`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ income, expenses, currency }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/ai/insights`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            income,
+            expenses,
+            currency,
+            userEmail, // ✅ important
+          }),
+        },
+      );
 
       if (!res.ok) {
+        if (res.status === 402) {
+          throw new Error("PAYMENT_REQUIRED");
+        }
+
         const text = await res.text();
         throw new Error(text);
       }
@@ -213,9 +229,34 @@ function ExpenseAnalysis() {
       const data = await res.json();
       setAIInsights(data.insights);
     } catch (err) {
-      setAiError(err.message || "Unable to fetch AI insights.");
+      if (err.message === "PAYMENT_REQUIRED") {
+        setAiError("FREE_LIMIT_OVER");
+        setShowUpgrade(true);
+      } else {
+        setAiError(err.message || "Unable to fetch AI insights.");
+      }
     } finally {
       setLoadingAI(false);
+    }
+  };
+
+  // ================= unlock after payment =================
+
+  const handleUnlockAi = async () => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/ai/unlock`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userEmail,
+        }),
+      });
+
+      setAiError("");
+      setShowUpgrade(false);
+      alert("AI unlocked. You can use AI insights now!");
+    } catch (e) {
+      alert("Unlock failed");
     }
   };
 
@@ -224,9 +265,9 @@ function ExpenseAnalysis() {
       <Slidebar />
       <ExpenseContainer>
         <AnalysisWrapper>
-          {/* 🟦 PART 1 — INPUTS */}
           <Section>
             <Title>Expense Categories</Title>
+
             <CurrencyWrapper>
               <Select
                 value={currency}
@@ -238,6 +279,7 @@ function ExpenseAnalysis() {
                 <option value="GBP">GBP (£)</option>
               </Select>
             </CurrencyWrapper>
+
             <ItemAmountWrapper>
               {expenses.map((row, index) => (
                 <Row key={index}>
@@ -253,6 +295,7 @@ function ExpenseAnalysis() {
                       </option>
                     ))}
                   </Select>
+
                   <Input
                     type="number"
                     placeholder="Amount"
@@ -267,6 +310,7 @@ function ExpenseAnalysis() {
                   )}
                 </Row>
               ))}
+
               <Input
                 type="number"
                 placeholder="Monthly Income"
@@ -274,6 +318,7 @@ function ExpenseAnalysis() {
                 onChange={(e) => setIncome(Number(e.target.value))}
               />
             </ItemAmountWrapper>
+
             <ButtonWrapper>
               <AddButton onClick={addRow}>+ Add Category</AddButton>
               <SubmitButton
@@ -287,6 +332,7 @@ function ExpenseAnalysis() {
 
           <Section>
             <Title>Analysis</Title>
+
             {isSubmitted && filteredPieData.length > 0 ? (
               <>
                 <div style={{ width: "100%", height: 300 }}>
@@ -322,33 +368,30 @@ function ExpenseAnalysis() {
                   </ResponsiveContainer>
                 </div>
 
-                {/* 🔹 Legend */}
                 <div style={{ marginTop: 12 }}>
-                  {isSubmitted &&
-                    filteredPieData.map((item, index) => (
-                      <div
-                        key={item.name}
+                  {filteredPieData.map((item, index) => (
+                    <div
+                      key={item.name}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontSize: 14,
+                        marginBottom: 6,
+                      }}
+                    >
+                      <span
                         style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          fontSize: 14,
-                          marginBottom: 6,
+                          color: PIECHARTCOLORS[index % PIECHARTCOLORS.length],
                         }}
                       >
-                        <span
-                          style={{
-                            color:
-                              PIECHARTCOLORS[index % PIECHARTCOLORS.length],
-                          }}
-                        >
-                          {item.name}
-                        </span>
-                        <span>{formatCurrency(item.value)}</span>
-                      </div>
-                    ))}
+                        {item.name}
+                      </span>
+                      <span>{formatCurrency(item.value)}</span>
+                    </div>
+                  ))}
                 </div>
 
-                {isSubmitted && hasIncome && (
+                {hasIncome && (
                   <p style={{ marginTop: 10, fontWeight: 600 }}>
                     💰 Savings: {formatCurrency(safeSavings)} (
                     {((safeSavings / income) * 100).toFixed(0)}%)
@@ -365,7 +408,9 @@ function ExpenseAnalysis() {
             )}
           </Section>
         </AnalysisWrapper>
-        {/* 🟦 PART 3 — AI INSIGHTS */}
+
+        {/* ================= AI section ================= */}
+
         <AIWrapper>
           <div
             style={{
@@ -382,25 +427,13 @@ function ExpenseAnalysis() {
             </AIButton>
           </div>
 
-          {aiError && (
+          {aiError && aiError !== "FREE_LIMIT_OVER" && (
             <p style={{ marginTop: 10, color: "#f87171" }}>{aiError}</p>
           )}
 
-          {aiInsights && (
-            <div
-              style={{
-                marginTop: 14,
-                padding: "14px 16px",
-                borderRadius: 12,
-                background: "rgba(255,255,255,0.08)",
-                fontSize: 14,
-                lineHeight: 1.6,
-              }}
-            >
-              {aiInsights}
-            </div>
-          )}
+          {aiInsights && <AIInsightBar text={aiInsights} />}
         </AIWrapper>
+
         <ExpenseTrendCard
           maxwidth
           withMargin
@@ -410,6 +443,15 @@ function ExpenseAnalysis() {
           categoryTotals={categoryTotals}
         />
       </ExpenseContainer>
+
+      {/* ================= upgrade popup ================= */}
+
+      {showUpgrade && (
+        <AiProUpgrade
+          onClose={() => setShowUpgrade(false)}
+          onPay={handleUnlockAi}
+        />
+      )}
     </AnalysisContainer>
   );
 }

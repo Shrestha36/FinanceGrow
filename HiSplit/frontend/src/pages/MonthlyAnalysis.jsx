@@ -3,8 +3,8 @@ import Slidebar from "../components/slideBar";
 import ProgressRing from "../components/ProgressRing";
 import { getGoal, saveGoal } from "../services/goal.api";
 import {
-  addExpense,
   getExpenses,
+  addExpense,
   deleteExpense,
   getExpenseAnalytics,
 } from "../services/expense.api";
@@ -42,6 +42,7 @@ import {
 
 export default function MonthlyAnalysis() {
   /* ───────── STATE ───────── */
+  const userEmail = "test@financegrow.com";  
   const [mode, setMode] = useState("month");
   const [label, setLabel] = useState("Jan");
   const [amount, setAmount] = useState("");
@@ -56,7 +57,7 @@ export default function MonthlyAnalysis() {
 
   const fetchAnalytics = async () => {
     try {
-      const data = await getExpenseAnalytics(mode);
+      const data = await getExpenseAnalytics(mode, userEmail);
       setAnalytics(data);
     } catch (err) {
       console.error("Failed to load analytics", err);
@@ -69,7 +70,7 @@ export default function MonthlyAnalysis() {
   useEffect(() => {
     const loadExpenses = async () => {
       try {
-        const data = await getExpenses();
+        const data = await getExpenses(userEmail);
         setExpenses(data);
       } catch (err) {
         console.error("Failed to fetch expenses", err);
@@ -105,6 +106,7 @@ export default function MonthlyAnalysis() {
         label,
         amount: Number(amount),
         mode,
+        userEmail,
       });
 
       // 3️⃣ Always append MongoDB document (_id included)
@@ -173,7 +175,7 @@ export default function MonthlyAnalysis() {
               />
             </InputRow>
 
-            <AddButton onClick={handleAddExpense}>
+            <AddButton type="button" onClick={handleAddExpense}>
               + Add {mode === "month" ? "Month" : "Year"}
             </AddButton>
           </InputCard>

@@ -1,10 +1,13 @@
-const BASE_URL = import.meta.env.VITE_API_URL + "/api";
+const BASE_URL = import.meta.env.VITE_API_URL + "/api/expenses";
 
-export const getExpenses = async () => {
-  const res = await fetch(BASE_URL);
+// get expense rows
+export const getExpenses = async (userEmail) => {
+  const res = await fetch(`${BASE_URL}?userEmail=${userEmail}`);
+  if (!res.ok) throw new Error(await res.text());
   return res.json();
 };
 
+// add expense row
 export const addExpense = async (expense) => {
   const res = await fetch(BASE_URL, {
     method: "POST",
@@ -12,22 +15,25 @@ export const addExpense = async (expense) => {
     body: JSON.stringify(expense),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(err);
-  }
-
+  if (!res.ok) throw new Error(await res.text());
   return res.json();
 };
 
+// delete expense row
 export const deleteExpense = async (id) => {
-  const res = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Delete failed");
+  const res = await fetch(`${BASE_URL}/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) throw new Error(await res.text());
 };
 
-export const getExpenseAnalytics = async (mode) => {
+// analytics
+export const getExpenseAnalytics = async (mode, userEmail) => {
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/api/expenses/analytics?mode=${mode}`
+    `${BASE_URL}/analytics?mode=${mode}&userEmail=${userEmail}`
   );
+
+  if (!res.ok) throw new Error(await res.text());
   return res.json();
 };
