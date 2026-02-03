@@ -22,7 +22,7 @@ export const DashboardGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 32px;
-  margin: 50px 12px;
+  margin: 120px 80px;
     @media (min-width: 1024px) {
      margin: 84px;
   }
@@ -155,7 +155,6 @@ export const HomePageWrapper = styled.div`
 
   @media (min-width: 1024px) {
     padding: 0;
-    align-items: flex-start;
     min-height: 100vh;
   }
 `;

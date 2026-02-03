@@ -32,20 +32,23 @@ export const SidebarWrapper = styled.aside`
     padding 0.3s ease;
 
   /* 📱 mobile → overlay drawer */
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     position: fixed;
     left: 0;
+    bottom: 0;
     top: 0;
 
-    width: 220px;
-    padding: 32px 20px;
+    height: 70px;
+    width: 100%;
 
-    z-index: 1000;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 
-    transform: ${({ open }) =>
-      open ? "translateX(0)" : "translateX(-100%)"};
+    padding: 0 10px;
 
-    transition: transform 0.3s ease;
+    border-right: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 `;
 
@@ -70,6 +73,9 @@ export const SidebarToggle = styled.button`
   justify-content: center;
 
   box-shadow: 0 0 12px rgba(34, 211, 238, 0.6);
+   @media (max-width: 1024px) {
+    display: none;
+  }
 `;
 
 /* Logo */
@@ -88,6 +94,13 @@ export const Nav = styled.nav`
   display: flex;
   flex-direction: column;
   gap: 22px;
+
+   @media (max-width: 1024px) {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    gap: 0;
+  }
 `;
 
 export const NavItem = styled.div`
