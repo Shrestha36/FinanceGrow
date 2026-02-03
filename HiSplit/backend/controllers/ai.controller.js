@@ -19,8 +19,7 @@ Each tip on a new line.
 `;
 
     const url =
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" +
-      process.env.GEMINI_API_KEY;
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
     const response = await fetch(url, {
       method: "POST",
@@ -36,8 +35,8 @@ Each tip on a new line.
 
     const raw = await response.json();
 
+    // 🔴 If Gemini returns an error, show it clearly
     if (!response.ok) {
-      console.error("Gemini API error:", raw);
       return res.status(500).json({
         message: "Gemini API error",
         raw,
@@ -54,7 +53,6 @@ Each tip on a new line.
     }
 
     res.json({ advice: text });
-
   } catch (err) {
     console.error("GEMINI ERROR:", err);
     res.status(500).json({ message: "AI failed" });
