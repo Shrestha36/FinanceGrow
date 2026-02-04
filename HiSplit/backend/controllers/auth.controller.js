@@ -1,72 +1,87 @@
+import bcrypt from "bcrypt";
+import User from "../models/User.js";
+import Profile from "../models/Profile.js";
+
 export const loginUser = async (req, res) => {
   try {
     const { identifier, password } = req.body;
 
-    if (!identifier || !password) {
-      return res.status(400).json({
-        message: "Email / phone and password are required",
-      });
-    }
+    if (!identifier || !password)
+      return res.status(400).json({ message: "All fields required" });
 
-    // 👉 demo user logic (for now)
-    const isValidUser =
-      (identifier === "test@financegrow.com" ||
-        identifier === "9999999999") &&
-      password === "Test@123";
+    const isEmail = identifier.includes("@");
 
-    if (!isValidUser) {
-      return res.status(401).json({
-        message: "Invalid email/phone or password",
-      });
-    }
+    const user = await User.findOne(
+      isEmail ? { email: identifier } : { phone: identifier }
+    );
 
-    // 👉 fake user
-    const user = {
-      _id: "demo-user-1",
-      email:
-        identifier.includes("@") ? identifier : "test@financegrow.com",
-      phone: identifier.includes("@") ? null : identifier,
-      name: "FinanceGrow User",
-    };
+    if (!user)
+      return res.status(401).json({ message: "Account does not exist. Please signup." });
 
-    // 👉 for now assume profile already exists
-    // later you will check DB
-    const hasProfile = true;
+    const match = await bcrypt.compare(password, user.password);
 
-    return res.status(200).json({
+    if (!match)
+      return res.status(401).json({ message: "Invalid credentials" });
+
+    const profile = await Profile.findOne({ userId: user._id });
+
+    return res.json({
       success: true,
-      user,
-      hasProfile,
+      user: {
+        _id: user._id,
+        email: user.email,
+        phone: user.phone,
+        name: user.name
+      },
+      hasProfile: !!profile
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Server error",
-    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 export const registerUser = async (req, res) => {
   try {
     const { identifier, password } = req.body;
 
-    if (!identifier || !password) {
+    if (!identifier || !password)
       return res.status(400).json({ message: "All fields required" });
+
+    const isEmail = identifier.includes("@");
+
+    const existing = await User.findOne(
+      isEmail ? { email: identifier } : { phone: identifier }
+    );
+
+    if (existing) {
+      return res
+        .status(400)
+        .json({ message: "Account already exists. Please login." });
     }
 
-    // ⚠️ demo only (no DB yet)
-    const user = {
-      _id: "demo-user-2",
-      email: identifier.includes("@") ? identifier : null,
-      phone: identifier.includes("@") ? null : identifier,
-    };
+    const hashed = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      email: isEmail ? identifier : null,
+      phone: isEmail ? null : identifier,
+      password: hashed
+    });
 
     return res.status(201).json({
       success: true,
-      user,
+      user: {
+        _id: user._id,
+        email: user.email,
+        phone: user.phone
+      }
     });
+
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Register failed" });
   }
 };
-

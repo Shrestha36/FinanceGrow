@@ -1,7 +1,4 @@
-// controllers/profile.controller.js
-
-// TEMP in-memory store (no DB yet)
-const profiles = [];
+import Profile from "../models/Profile.js";
 
 export const createProfile = async (req, res) => {
   try {
@@ -13,40 +10,40 @@ export const createProfile = async (req, res) => {
       });
     }
 
-    const alreadyExists = profiles.find((p) => p.userId === userId);
+    const existing = await Profile.findOne({ userId });
 
-    if (alreadyExists) {
+    if (existing) {
       return res.status(200).json({
         success: true,
-        profile: alreadyExists,
+        profile: existing,
         alreadyExists: true,
       });
     }
 
-    const profile = {
+    const profile = await Profile.create({
       userId,
       username,
       address,
-    };
+    });
 
-    profiles.push(profile);
-
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
       profile,
     });
+
   } catch (err) {
-    res.status(500).json({
-      message: "Server error",
-    });
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 export const getProfile = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const profile = profiles.find((p) => p.userId === userId);
+    const profile = await Profile.findOne({ userId });
 
     if (!profile) {
       return res.status(404).json({
@@ -55,9 +52,9 @@ export const getProfile = async (req, res) => {
     }
 
     res.json(profile);
+
   } catch (err) {
-    res.status(500).json({
-      message: "Server error",
-    });
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };

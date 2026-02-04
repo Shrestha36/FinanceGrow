@@ -3,8 +3,7 @@ import mongoose from "mongoose";
 const profileSchema = new mongoose.Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
       required: true,
       unique: true
     },
@@ -20,7 +19,7 @@ const profileSchema = new mongoose.Schema(
     },
 
     avatar: {
-      type: String, // url (optional)
+      type: String,
       default: ""
     }
   },
