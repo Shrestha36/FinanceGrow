@@ -8,11 +8,12 @@ export const PageContainer = styled.div`
 `;
 
 export const GridWrapper = styled.div`
+  margin: 150px;
   gap: 32px;
   padding: 24px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 
   @media (min-width: 1024px) {
     flex-direction: row;
@@ -20,7 +21,7 @@ export const GridWrapper = styled.div`
   }
 `;
 export const InputCard = styled.div`
- background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(14px);
   border-radius: 20px;
   padding: 24px;
@@ -34,15 +35,13 @@ export const InputCard = styled.div`
       0 0 0 1px rgba(34,211,238,0.5),
       0 0 30px rgba(34,211,238,0.25);
   `}
-  
-`
+`;
 export const Card = styled.div`
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(14px);
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 20px;
-  
 
   @media (min-width: 1024px) {
     width: 400px;
@@ -55,7 +54,6 @@ export const Card = styled.div`
       0 0 0 1px rgba(34,211,238,0.5),
       0 0 30px rgba(34,211,238,0.25);
   `}
-  
 `;
 
 export const CardTitle = styled.h3`
@@ -129,8 +127,7 @@ export const GoalModal = styled.div`
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(18px);
   text-align: center;
-  box-shadow:
-    0 0 40px rgba(34, 211, 238, 0.35);
+  box-shadow: 0 0 40px rgba(34, 211, 238, 0.35);
 `;
 
 export const GoalStats = styled.div`
@@ -162,12 +159,10 @@ export const ExpenseList = styled.div`
   @media (min-width: 1024px) {
     width: 400px;
   }
-  
 `;
 
 export const ExpenseBarContainer = styled.div`
- gap: 32px;
-    display: flex;
-    flex-direction: column;
-
-`
+  gap: 32px;
+  display: flex;
+  flex-direction: column;
+`;

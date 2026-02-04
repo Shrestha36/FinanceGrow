@@ -39,12 +39,8 @@ export const SidebarWrapper = styled.aside`
     left: 0;
     bottom: 0;
     top: 0;
-
     height: 70px;
-    width: 100%;
-
     flex-direction: column;
-    align-items: center;
 
     padding: 0 10px;
 

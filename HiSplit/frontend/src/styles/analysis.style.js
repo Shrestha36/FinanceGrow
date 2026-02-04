@@ -34,11 +34,9 @@ export const Section = styled.div`
   backdrop-filter: blur(12px);
   padding: 28px;
   border-radius: 22px;
-
-  width: 100%;
-
   display: flex;
   flex-direction: column;
+
   @media (max-width: 600px) {
     padding: 20px;
     border-radius: 18px;
@@ -150,11 +148,6 @@ export const PlaceholderWrapper = styled.div`
 
 export const PlaceholderImage = styled.img`
   width: 360px;
-  mask-image: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 1) 55%,
-    rgba(0, 0, 0, 0) 85%
-  );
   pointer-events: none;
 `;
 
@@ -297,10 +290,8 @@ export const AIWrapper = styled.div`
 
 export const ItemAmountWrapper = styled.div`
   @media (max-width: 1024px) {
-    height: 300px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
   }
   padding: 12px 0px 12px;
 `;
@@ -311,22 +302,21 @@ export const ButtonWrapper = styled.div`
   align-items: center;
   gap: 12px;
   margin-top: 140px;
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     flex-direction: column;
   }
 `;
 
 export const ExpenseContainer = styled.div`
-  width: 100%;
-  max-width: 600px;
-  padding: 80px 24px 120px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: 120px;
 
   /* Desktop only */
-  @media (min-width: 1024px) {
-    max-width: 1300px;
+  @media (max-width: 1024px) {
     padding: 80px 24px 120px;
+    width: 100%;
+    max-width: 600px;
   }
 `;
