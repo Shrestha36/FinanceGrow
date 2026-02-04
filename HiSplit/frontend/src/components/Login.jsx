@@ -50,27 +50,37 @@ function Login() {
       setLoading(true);
       setError("");
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          identifier,
-          password,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            identifier,
+            password,
+          }),
+        },
+      );
 
       const data = await res.json();
 
       if (!res.ok) {
+        if (res.status === 401) {
+          throw new Error("Account not found. Please sign up first.");
+        }
+
         throw new Error(data.message || "Login failed");
       }
 
       localStorage.setItem("user", JSON.stringify(data.user));
       setUser(data.user);
 
+      // ✅ old user → home
       if (data.hasProfile) {
         navigate("/home");
-      } else {
+      }
+      // ✅ new user → profile
+      else {
         setStep("profile");
       }
     } catch (err) {
@@ -115,7 +125,7 @@ function Login() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Signup failed");
+        throw new Error(data.message);
       }
 
       setUser(data.user);
@@ -131,7 +141,7 @@ function Login() {
   // PROFILE
   // ----------------------
   const handleProfileSave = async () => {
-    if (!user) {
+    if (!user?._id) {
       setError("User not found. Please login again.");
       return;
     }
@@ -149,7 +159,7 @@ function Login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: user._id || user.email,
+          userId: user._id, // ✅ ONLY ObjectId
           username,
           address,
         }),
@@ -221,7 +231,11 @@ function Login() {
 
               <Button
                 type="button"
-                style={{ marginTop: 10, background: "transparent", color: "#22d3ee" }}
+                style={{
+                  marginTop: 10,
+                  background: "transparent",
+                  color: "#22d3ee",
+                }}
                 onClick={() => {
                   setError("");
                   setPassword("");
@@ -262,7 +276,11 @@ function Login() {
 
               <Button
                 type="button"
-                style={{ marginTop: 10, background: "transparent", color: "#22d3ee" }}
+                style={{
+                  marginTop: 10,
+                  background: "transparent",
+                  color: "#22d3ee",
+                }}
                 onClick={() => {
                   setError("");
                   setPassword("");
