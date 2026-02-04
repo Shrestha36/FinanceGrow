@@ -20,7 +20,7 @@ const app = express();
 
 // ✅ THESE TWO MUST BE BEFORE ROUTES
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "https://financegrow-dashboard.onrender.com",
   credentials: true
 }));
 app.use(express.json());   // 👈 REQUIRED
