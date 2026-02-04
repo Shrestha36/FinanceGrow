@@ -24,7 +24,7 @@ export const DashboardGrid = styled.div`
   gap: 32px;
   margin: 120px 80px;
     @media (min-width: 1024px) {
-     margin: 84px;
+             margin: 50px 150px;
   }
 `;
 

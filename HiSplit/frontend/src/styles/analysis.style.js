@@ -326,7 +326,7 @@ export const ExpenseContainer = styled.div`
 
   /* Desktop only */
   @media (min-width: 1024px) {
-    max-width: 1100px;
+    max-width: 1300px;
     padding: 80px 24px 120px;
   }
 `;

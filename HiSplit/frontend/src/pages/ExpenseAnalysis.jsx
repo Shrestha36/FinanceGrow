@@ -5,6 +5,7 @@ import ExpenseTrendCard from "../components/ExpenseTrendCard";
 import Slidebar from "../components/slideBar";
 import AiProUpgrade from "../components/AiProUpgrade";
 import AIInsightBar from "../components/AIInsightBar";
+import Loader from "../components/Loader";
 
 import {
   saveExpenseAnalysis as saveExpenseAPI,
@@ -426,6 +427,7 @@ function ExpenseAnalysis() {
               {loadingAI ? "Analyzing..." : "Ask AI to Optimize Expenses"}
             </AIButton>
           </div>
+          {loadingAI && <Loader />}
 
           {aiError && aiError !== "FREE_LIMIT_OVER" && (
             <p style={{ marginTop: 10, color: "#f87171" }}>{aiError}</p>

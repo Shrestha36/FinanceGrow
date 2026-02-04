@@ -16,7 +16,7 @@ export const GridWrapper = styled.div`
 
   @media (min-width: 1024px) {
     flex-direction: row;
-    margin: 0 120px;
+    margin: 120px 200px;
   }
 `;
 export const InputCard = styled.div`
