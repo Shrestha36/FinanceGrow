@@ -41,7 +41,7 @@ export const SidebarWrapper = styled.aside`
     height: 70px;
     width: 100%;
 
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 
@@ -95,10 +95,10 @@ export const Nav = styled.nav`
   gap: 22px;
 
   @media (max-width: 1024px) {
-    flex-direction: row;
+    flex-direction: column;
     width: 100%;
     justify-content: space-around;
-    gap: 0;
+    
   }
 `;
 

@@ -151,11 +151,11 @@ export const SlideBarConatiner = styled.div``;
 export const HomePageWrapper = styled.div`
   display: flex;
   justify-content: center;
-  padding: 4px 16px;
 
   @media (min-width: 1024px) {
     padding: 0;
     min-height: 100vh;
+    padding: 4px 16px;
   }
 `;
 
