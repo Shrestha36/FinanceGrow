@@ -8,7 +8,7 @@ export const Layout = styled.div`
 
 /* Sidebar */
 export const SidebarWrapper = styled.aside`
-  height: 100%;
+  min-height: 100%;
 
   /* 🖥 desktop → participate in layout */
   position: sticky;
@@ -33,7 +33,7 @@ export const SidebarWrapper = styled.aside`
 
   /* 📱 mobile → overlay drawer */
   @media (max-width: 1024px) {
-    position: fixed;
+   position: relative;
     left: 0;
     bottom: 0;
     top: 0;
@@ -51,7 +51,6 @@ export const SidebarWrapper = styled.aside`
     border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 `;
-
 
 export const SidebarToggle = styled.button`
   position: absolute;
@@ -73,7 +72,7 @@ export const SidebarToggle = styled.button`
   justify-content: center;
 
   box-shadow: 0 0 12px rgba(34, 211, 238, 0.6);
-   @media (max-width: 1024px) {
+  @media (max-width: 1024px) {
     display: none;
   }
 `;
@@ -95,7 +94,7 @@ export const Nav = styled.nav`
   flex-direction: column;
   gap: 22px;
 
-   @media (max-width: 1024px) {
+  @media (max-width: 1024px) {
     flex-direction: row;
     width: 100%;
     justify-content: space-around;
@@ -151,4 +150,4 @@ export const Content = styled.main`
   overflow-y: auto;
 `;
 
-export const SlidebarContainer = styled.div``
+export const SlidebarContainer = styled.div``;

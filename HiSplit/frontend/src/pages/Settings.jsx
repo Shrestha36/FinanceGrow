@@ -87,8 +87,11 @@ function Settings() {
   // Load profile (local only)
   // ----------------------------
   useEffect(() => {
-    const p = localStorage.getItem("profile");
-    if (p) setProfile(JSON.parse(p));
+    const user = localStorage.getItem("user");
+
+    if (user) {
+      setProfile(JSON.parse(user));
+    }
   }, []);
 
   // ----------------------------
@@ -117,24 +120,30 @@ function Settings() {
         {/* ---------------- top cards ---------------- */}
         <TopRow>
           {/* profile */}
+          {/* Profile */}
           <GlassCard glow>
             <CardTitle>Profile</CardTitle>
 
             {profile && (
               <ProfileGrid>
                 <ProfileRow>
-                  <Label>Username</Label>
-                  <Value>{profile.username}</Value>
-                </ProfileRow>
-
-                <ProfileRow>
-                  <Label>Address</Label>
-                  <Value>{profile.address}</Value>
+                  <Label>Name</Label>
+                  <Value>{profile.name}</Value>
                 </ProfileRow>
 
                 <ProfileRow>
                   <Label>Email</Label>
                   <Value>{profile.email}</Value>
+                </ProfileRow>
+
+                <ProfileRow>
+                  <Label>Phone</Label>
+                  <Value>{profile.phone}</Value>
+                </ProfileRow>
+
+                <ProfileRow>
+                  <Label>User ID</Label>
+                  <Value>{profile._id}</Value>
                 </ProfileRow>
               </ProfileGrid>
             )}

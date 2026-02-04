@@ -4,15 +4,16 @@ export const Page = styled.div`
   display: flex;
   min-height: 100vh;
   background: #0b1220;
+  
+
+   @media (max-width: 1024px) {
+    flex-direction: column;
+  }
 `;
 
 export const Container = styled.div`
   flex: 1;
-  padding: 80px 40px 40px 120px;
-
-  @media (max-width: 768px) {
-    padding: 80px 16px 16px 16px;
-  }
+  padding: 50px 40px 40px;
 `;
 
 export const Header = styled.h1`
