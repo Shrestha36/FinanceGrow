@@ -40,7 +40,7 @@ export const ScanCard = styled.div`
   }
   @media (min-width: 768px) {
     padding: 18px 30px;
-    // display: flex;
+    display: flex;
     flex-direction: column;
     justify-content: center;
   }

@@ -33,7 +33,9 @@ export const SidebarWrapper = styled.aside`
 
   /* 📱 mobile → overlay drawer */
   @media (max-width: 1024px) {
-   position: relative;
+    display: flex;
+    justify-content: flex-start;
+    position: relative;
     left: 0;
     bottom: 0;
     top: 0;
@@ -43,7 +45,6 @@ export const SidebarWrapper = styled.aside`
 
     flex-direction: column;
     align-items: center;
-    justify-content: center;
 
     padding: 0 10px;
 
@@ -98,7 +99,6 @@ export const Nav = styled.nav`
     flex-direction: column;
     width: 100%;
     justify-content: space-around;
-    
   }
 `;
 

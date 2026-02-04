@@ -15,17 +15,13 @@ export const HomepageContainer = styled.div`
   background:
     linear-gradient(rgba(2, 6, 23, 0.6), rgba(2, 6, 23, 0.6)),
     url(${(p) => p.bg}) center / cover no-repeat;
-
 `;
 
 export const DashboardGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 32px;
-  margin: 120px 80px;
-    @media (min-width: 1024px) {
-             margin: 50px 150px;
-  }
+  margin: 120px 50px;
 `;
 
 export const GlassCard = styled.div`
@@ -152,10 +148,9 @@ export const HomePageWrapper = styled.div`
   display: flex;
   justify-content: center;
 
-  @media (min-width: 1024px) {
+  @media (max-width: 1024px) {
     padding: 0;
     min-height: 100vh;
-    padding: 4px 16px;
   }
 `;
 
@@ -176,7 +171,6 @@ export const SubtextContainer = styled.div`
 export const ScanCardContainer = styled.div`
   @media (min-width: 768px) {
     width: 360px;
-    max-height: 560px;
     display: flex;
   }
 `;
