@@ -312,10 +312,10 @@ export const ExpenseContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 120px;
+  margin: 50px;
 
   /* Desktop only */
-  @media (max-width: 1024px) {
+  @media (min-width: 1024px) {
     padding: 80px 24px 120px;
     width: 100%;
     max-width: 600px;
