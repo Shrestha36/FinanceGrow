@@ -36,9 +36,10 @@ export const Section = styled.div`
   border-radius: 22px;
   display: flex;
   flex-direction: column;
-  width: 500px;
+  width: 100%;
+  
 
-  @media (max-width: 600px) {
+  @media (max-width: 1024px) {
     padding: 20px;
     border-radius: 18px;
   }
@@ -318,6 +319,5 @@ export const ExpenseContainer = styled.div`
   @media (min-width: 1024px) {
     padding: 80px 24px 120px;
     width: 100%;
-    max-width: 600px;
   }
 `;
