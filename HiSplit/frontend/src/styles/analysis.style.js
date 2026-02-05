@@ -36,6 +36,7 @@ export const Section = styled.div`
   border-radius: 22px;
   display: flex;
   flex-direction: column;
+  width: 500px;
 
   @media (max-width: 600px) {
     padding: 20px;
